@@ -1,0 +1,11 @@
+Report Menu  
+
+1. Print details of all films
+
+2. Print all films of a particular genre 
+
+3. Print all films of a particular year 
+
+5. Print all films of a particular rating 
+
+5. Exit 
