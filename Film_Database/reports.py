@@ -1,15 +1,12 @@
 from connect import *
 
-def searchByID():
+def showAll():
     try: 
-        filmID = int(input("Search by filmID: "))
-        dbCursor.execute("SELECT * FROM tblFilms WHERE filmID = ?", (filmID,))
-        row = dbCursor.fetchone()
+        dbCursor.execute("SELECT * FROM tblFilms") # selects all data from tblFilms
+        allFilms = dbCursor.fetchall() # retrieves all selected rows/records
         
-        if row == None:
-            print(f'No record with the FilmID {filmID} exists in the table.')
-        else:
-            print(row)
+        for film in allFilms:
+            print(film)
     except sql.OperationalError as e:
         print(f"failed because:  {e}")
  
@@ -79,7 +76,7 @@ def searchByRating():
     except sql.Error as er:
          print(f"failed because Error:  {er}")
 if __name__ == "__main__":
-    searchByID()
+    showAll()
     searchByGenre()
     searchByYear()
     searchByRating()

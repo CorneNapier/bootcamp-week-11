@@ -6,6 +6,6 @@ Report Menu
 
 3. Print all films of a particular year 
 
-5. Print all films of a particular rating 
+4. Print all films of a particular rating 
 
 5. Exit 
