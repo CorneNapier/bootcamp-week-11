@@ -10,13 +10,10 @@ def update_film():
         if row == None:
             print(f'No record with the FilmID {filmID} exists.')
         else:
-            fTitle = input("Enter the film title: ")
-            fReleaseYear = int(input("Enter the film's release year: "))
-            fRating = input("Enter age rating for the film: ")
-            fDuration = int(input("Enter the duration of the film: "))
-            fGenre = input("Enter the film's genre: ")
+            fName = input("Enter the field (title, yearReleased, rating, duration, genre): ").title()
+            fValue = input(f"Enter the value for {fName}: ")
             
-            dbCursor.execute("UPDATE tblFilms SET title = ?, yearReleased = ?, rating = ?, duration = ?, genre = ? WHERE filmID = ?", (fTitle, fReleaseYear, fRating, fDuration, fGenre, filmID))
+            dbCursor.execute(f"UPDATE tblFilms SET {fName} = ? WHERE filmID = ?", (fValue, filmID))
             dbcon.commit()
             print(f'Record with FilmID {filmID} has been Updated.')
     except sql.OperationalError as e:
