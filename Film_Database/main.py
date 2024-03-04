@@ -94,6 +94,8 @@ while mainProgram:
                 pass
             elif report_choice == "5":
                 break
+    elif mainMenuChoice == '3':
+        break
     else:
         print("Invalid choice!")
         
