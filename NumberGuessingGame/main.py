@@ -15,12 +15,20 @@ def game():
         while True:
             guess = int(input("\nGuess a number: "))
             
-            if guess == number:
+            if guess > number:
+                attempts -= 1
+                print(f'The number {guess} is higher than the number I am thinking of.')
+                print(f'You have {attempts} attempts left.')
+                pass
+            elif guess < number:
+                attempts -= 1
+                print(f'The number {guess} is lower than the number I am thinking of.')
+                print(f'You have {attempts} attempts left.')
+                pass
+            elif guess == number:
                 print('Correct! You win!!!!')
                 break
             else:
-                attempts -= 1
-                print(f'Wrong guess! You have {attempts} attempts left.')
                 if attempts == 0:
                     print(f'Game over! The number was: {number}')
                     break
