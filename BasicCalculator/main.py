@@ -9,7 +9,7 @@ def read_file(file_path):
 def calculator_menu():
     option = 0 
     optionsList = ['1', '2', '3', '4', '5', '6']
-    menuChoices = read_file("Calculator/calculator_options.txt")
+    menuChoices = read_file("BasicCalculator/calculator_options.txt")
       
     while option not in optionsList:
         print(menuChoices)
