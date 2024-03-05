@@ -1,4 +1,4 @@
-def read_file(file_path): #file_path is a parameter/variable
+def read_file(file_path):
     try:
         with open(file_path) as readFile:
             rf = readFile.read()
@@ -20,12 +20,10 @@ def calculator_menu():
             print(f'{option} is not a valid choice!!!')
     return option
 
-mainProgram = True #Toggle to False to exit the while loop below
+mainProgram = True
 while mainProgram:
-    #call the songs menu function and assign it to a variable
     mainMenu = calculator_menu()
     
-    #match case is the same as switch in JavaScript
     match mainMenu:
         case "1": 
             num1 = int(input('Enter the first number: '))
@@ -53,5 +51,5 @@ while mainProgram:
             answer = num1 % num2
             print(f'The answer to {num1} % {num2} = {answer}')
         case _:
-            mainProgram = False #set mainProgram variable to false to exit the menu
+            mainProgram = False 
 input("Press enter to exit.....")
