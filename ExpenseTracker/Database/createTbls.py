@@ -8,4 +8,3 @@ dbCursor.execute("""
         expenseCategory TEXT
     )
     """)
-dbCon.commit()

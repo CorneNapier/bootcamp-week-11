@@ -1,5 +1,4 @@
 from Database.connect import *
-
 def read_file(file_path):
     try:
         with open(file_path) as readFile:
@@ -22,37 +21,40 @@ def expense_menu():
             print(f'{option} is not a valid choice!!!')
     return option
 
-def add_expense(expenses, name, amount, category):
-    expenses.append({"name": name, "amount": amount, "category": category})
+def add_expense(expenseName, amount, expenseCategory):
+    dbCursor.execute("INSERT INTO expenses (expenseName, amount, expenseCategory) VALUES (?, ?, ?)", (expenseName, amount, expenseCategory))
+    dbCon.commit()
 
-def get_total_expenses(expenses):
-    return sum(expense["amount"] for expense in expenses)
+def get_total_expenses():
+    dbCursor.execute("SELECT SUM(amount) FROM expenses")
+    total_expenses = dbCursor.fetchone()[0]
+    return total_expenses
 
-def get_expenses_by_category(expenses, category):
-    return [expense for expense in expenses if expense["category"] == category]
+def get_expenses_by_category(expenseCategory):
+    dbCursor.execute("SELECT * FROM expenses WHERE expenseCategory=?", (expenseCategory,))
+    category_expenses = dbCursor.fetchall()
+    return category_expenses
 
-def main():
-    expenses = []
-
+def main():   
     while True:
         mainMenu = expense_menu()
 
         if mainMenu == '1':
-            name = input("Enter expense name: ")
+            expenseName = input("Enter expense name: ")
             amount = float(input("Enter expense amount: "))
-            category = input("Enter expense category: ")
-            add_expense(expenses, name, amount, category)
+            expenseCategory = input("Enter expense category: ")
+            add_expense(expenseName, amount, expenseCategory)
             print("Expense added successfully!")
         elif mainMenu == '2':
-            total_expenses = get_total_expenses(expenses)
+            total_expenses = get_total_expenses()
             print(f"Total Expenses: ${total_expenses}")
         elif mainMenu == '3':
-            category = input("Enter category to view expenses: ")
-            category_expenses = get_expenses_by_category(expenses, category)
-            total_category_expenses = sum(expense["amount"] for expense in category_expenses)
-            print(f"Total Expenses in {category}: ${total_category_expenses}")
+            expenseCategory = input("Enter category to view expenses: ")
+            category_expenses = get_expenses_by_category(expenseCategory)
+            total_category_expenses = sum(expense[2] for expense in category_expenses)
+            print(f"Total Expenses in {expenseCategory}: ${total_category_expenses}")
             for expense in category_expenses:
-                print(f"{expense['name']}: ${expense['amount']}")
+                print(f"{expense[1]}: ${expense[2]}")
         elif mainMenu == '4':
             print("Exiting...")
             break
