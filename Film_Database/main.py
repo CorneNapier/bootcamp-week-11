@@ -1,4 +1,4 @@
-import addFilms, readFilms, updateFilms, deleteFilms, reports
+from Database import addFilms, readFilms, updateFilms, deleteFilms, reports
 
 def read_file(file_path): #file_path is a parameter/variable
     try:
