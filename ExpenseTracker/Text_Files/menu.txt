@@ -4,5 +4,6 @@ _______________________________
 |1. Add Expense               |
 |2. View Total Expenses       |
 |3. View Expenses by Category |
-|4. Exit                      |
+|4. Remove Expense            |
+|5. Exit                      |
 -------------------------------

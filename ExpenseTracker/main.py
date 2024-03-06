@@ -9,7 +9,7 @@ def read_file(file_path):
 
 def expense_menu():
     option = 0 
-    optionsList = ['1', '2', '3', '4']
+    optionsList = ['1', '2', '3', '4', '5']
     menuChoices = read_file("ExpenseTracker/Text_Files/menu.txt")
       
     while option not in optionsList:
@@ -24,6 +24,18 @@ def expense_menu():
 def add_expense(expenseName, amount, expenseCategory):
     dbCursor.execute("INSERT INTO expenses (expenseName, amount, expenseCategory) VALUES (?, ?, ?)", (expenseName, amount, expenseCategory))
     dbCon.commit()
+    
+def remove_expense():
+        ID = int(input("Enter the ID of the expense to be deleted: "))
+        dbCursor.execute(f"SELECT * FROM expenses WHERE ID = {ID}")
+        row = dbCursor.fetchone()
+            
+        if row == None:
+            print(f'Delete not possible: No record with the ID {ID} exists.')
+        else:
+            dbCursor.execute("DELETE FROM expenses WHERE ID = ?", (ID,))
+            dbCon.commit()
+            print(f'The expense with the ID {ID} has been deleted from the expenses table.')
 
 def get_total_expenses():
     dbCursor.execute("SELECT SUM(amount) FROM expenses")
@@ -56,6 +68,8 @@ def main():
             for expense in category_expenses:
                 print(f"{expense[1]}: ${expense[2]}")
         elif mainMenu == '4':
+            remove_expense()
+        elif mainMenu == '5':
             print("Exiting...")
             break
         else:
