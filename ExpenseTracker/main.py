@@ -1,3 +1,5 @@
+from Database.connect import *
+
 def read_file(file_path):
     try:
         with open(file_path) as readFile:
@@ -9,7 +11,7 @@ def read_file(file_path):
 def expense_menu():
     option = 0 
     optionsList = ['1', '2', '3', '4']
-    menuChoices = read_file("ExpenseTracker/menu.txt")
+    menuChoices = read_file("ExpenseTracker/Text_Files/menu.txt")
       
     while option not in optionsList:
         print(menuChoices)
