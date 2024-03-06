@@ -9,7 +9,7 @@ def read_file(file_path):
 
 def expense_menu():
     option = 0 
-    optionsList = ['1', '2', '3', '4', '5']
+    optionsList = ['1', '2', '3', '4', '5', '6']
     menuChoices = read_file("ExpenseTracker/Text_Files/menu.txt")
       
     while option not in optionsList:
@@ -26,16 +26,22 @@ def add_expense(expenseName, amount, expenseCategory):
     dbCon.commit()
     
 def remove_expense():
-        expenseName = input("Enter the name of the expense to be deleted: ")
-        dbCursor.execute(f"SELECT expenseName FROM expenses")
+        ID = input("Enter the ID of the expense to be deleted: ")
+        dbCursor.execute(f"SELECT * FROM expenses WHERE ID = {ID}")
         row = dbCursor.fetchone()
             
         if row == None:
-            print(f'Delete not possible: No record with the name {expenseName} exists.')
+            print(f'Delete not possible: No record with the ID {ID} exists.')
         else:
-            dbCursor.execute("DELETE FROM expenses WHERE expenseName = ?", (expenseName,))
+            dbCursor.execute("DELETE FROM expenses WHERE ID = ?", (ID,))
             dbCon.commit()
-            print(f'The expense {expenseName} has been deleted from the expenses table.')
+            print(f'The expense with the ID {ID} has been deleted from the expenses table.')
+            
+def showAllExpenses():
+    dbCursor.execute("SELECT * FROM expenses") # selects all data from tblFilms
+    allExpenses = dbCursor.fetchall() # retrieves all selected rows/records
+    for expense in allExpenses:
+        print(expense)
 
 def get_total_expenses():
     dbCursor.execute("SELECT SUM(amount) FROM expenses")
@@ -68,8 +74,10 @@ def main():
             for expense in category_expenses:
                 print(f"{expense[1]}: ${expense[2]}")
         elif mainMenu == '4':
-            remove_expense()
+            showAllExpenses()
         elif mainMenu == '5':
+            remove_expense()
+        elif mainMenu == '6':
             print("Exiting...")
             break
         else:

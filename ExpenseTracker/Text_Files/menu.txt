@@ -1,9 +1,10 @@
-_______________________________
-|       Expense Tracker       |
-*******************************
-|1. Add Expense               |
-|2. View Total Expenses       |
-|3. View Expenses by Category |
-|4. Remove Expense            |
-|5. Exit                      |
--------------------------------
+_________________________________________
+|       Expense Tracker                 |
+*****************************************
+|1. Add Expense                         |
+|2. View Total Amount of Expenses       |
+|3. View Expenses by Category           |
+|4. Show All Expenses                   |
+|5. Remove Expense                      |
+|6. Exit                                |
+-----------------------------------------
