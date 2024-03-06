@@ -26,16 +26,16 @@ def add_expense(expenseName, amount, expenseCategory):
     dbCon.commit()
     
 def remove_expense():
-        ID = int(input("Enter the ID of the expense to be deleted: "))
-        dbCursor.execute(f"SELECT * FROM expenses WHERE ID = {ID}")
+        expenseName = input("Enter the name of the expense to be deleted: ")
+        dbCursor.execute(f"SELECT expenseName FROM expenses")
         row = dbCursor.fetchone()
             
         if row == None:
-            print(f'Delete not possible: No record with the ID {ID} exists.')
+            print(f'Delete not possible: No record with the name {expenseName} exists.')
         else:
-            dbCursor.execute("DELETE FROM expenses WHERE ID = ?", (ID,))
+            dbCursor.execute("DELETE FROM expenses WHERE expenseName = ?", (expenseName,))
             dbCon.commit()
-            print(f'The expense with the ID {ID} has been deleted from the expenses table.')
+            print(f'The expense {expenseName} has been deleted from the expenses table.')
 
 def get_total_expenses():
     dbCursor.execute("SELECT SUM(amount) FROM expenses")
