@@ -1,87 +1,119 @@
-from Database.connect import *
-def read_file(file_path):
-    try:
-        with open(file_path) as readFile:
-            rf = readFile.read()
-            return rf
-    except FileNotFoundError as nf:
-        print(f'File not found because: {nf}')
+import tkinter as tk
+from tkinter import messagebox, simpledialog
+import tkinter.ttk as ttk
+import tracker  
+from Database.connect import *  
 
-def expense_menu():
-    option = 0 
-    optionsList = ['1', '2', '3', '4', '5', '6']
-    menuChoices = read_file("ExpenseTracker/Text_Files/menu.txt")
-      
-    while option not in optionsList:
-        print(menuChoices)
-        
-        option = input("Enter an option from the menu choices above: ")
-        
-        if option not in optionsList:
-            print(f'{option} is not a valid choice!!!')
-    return option
+class ExpenseTrackerGUI:
+    def __init__(self, master):
+        self.master = master
+        self.master.title('Expense Tracker')
 
-def add_expense(expenseName, amount, expenseCategory):
-    dbCursor.execute("INSERT INTO expenses (expenseName, amount, expenseCategory) VALUES (?, ?, ?)", (expenseName, amount, expenseCategory))
-    dbCon.commit()
-    
-def remove_expense():
-        ID = input("Enter the ID of the expense to be deleted: ")
-        dbCursor.execute(f"SELECT * FROM expenses WHERE ID = {ID}")
+        # Setup a basic GUI layout with buttons to call your functions
+        self.setup_gui()
+
+    def setup_gui(self):
+        # Add Expense Button
+        self.add_expense_btn = tk.Button(self.master, text="Add Expense", command=self.add_expense)
+        self.add_expense_btn.pack(pady=5)
+
+        # View Expenses Button
+        self.view_expenses_btn = tk.Button(self.master, text="View All Expenses", command=self.view_expenses)
+        self.view_expenses_btn.pack(pady=5)
+
+        # Remove Expense Button
+        self.remove_expense_btn = tk.Button(self.master, text="Remove Expense", command=self.remove_expense)
+        self.remove_expense_btn.pack(pady=5)
+
+        # View Expenses by Category Button
+        self.view_category_btn = tk.Button(self.master, text="View Expenses by Category", command=self.view_category_expenses)
+        self.view_category_btn.pack(pady=5)
+
+        # View Total Expenses Button
+        self.view_total_btn = tk.Button(self.master, text="View Total Expenses", command=self.view_total_expenses)
+        self.view_total_btn.pack(pady=5)
+
+        # Exit Button
+        self.exit_btn = tk.Button(self.master, text="Exit", command=self.master.quit)
+        self.exit_btn.pack(pady=5)
+
+    def add_expense(self):
+        # Function to prompt user for expense details and add it
+        expense_name = simpledialog.askstring("Input", "Enter expense name:")
+        amount = simpledialog.askfloat("Input", "Enter expense amount:")
+        expense_category = simpledialog.askstring("Input", "Enter expense category:")
+
+        if expense_name and amount and expense_category:
+            tracker.add_expense(expense_name, amount, expense_category)
+            messagebox.showinfo("Success", "Expense added successfully.")
+
+    def view_expenses(self):
+        expenses = tracker.showAllExpenses()
+
+        # Create a new window
+        expense_window = tk.Toplevel(self.master)
+        expense_window.title("All Expenses")
+
+        # Define Treeview
+        columns = ('ID', 'Name', 'Amount', 'Category')
+        expense_tree = ttk.Treeview(expense_window, columns=columns, show='headings')
+
+        # Define headings
+        for col in columns:
+            expense_tree.heading(col, text=col)
+
+        # Add data to the treeview
+        for expense in expenses:
+            expense_tree.insert('', tk.END, values=expense)
+
+        expense_tree.pack(expand=True, fill='both')
+
+    def remove_expense(self):
+     expense_id = simpledialog.askinteger("Input", "Enter the ID of the expense to be deleted:")
+     if expense_id is not None:
+        # Execute the SQL query to select the expense by ID
+        dbCursor.execute("SELECT * FROM expenses WHERE ID = ?", (expense_id,))
         row = dbCursor.fetchone()
-            
-        if row == None:
-            print(f'Delete not possible: No record with the ID {ID} exists.')
+        if row is None:
+            messagebox.showerror("Error", f"Delete not possible: No record with the ID {expense_id} exists.")
         else:
-            dbCursor.execute("DELETE FROM expenses WHERE ID = ?", (ID,))
+            # Execute the SQL query to delete the expense
+            dbCursor.execute("DELETE FROM expenses WHERE ID = ?", (expense_id,))
             dbCon.commit()
-            print(f'The expense with the ID {ID} has been deleted from the expenses table.')
-            
-def showAllExpenses():
-    dbCursor.execute("SELECT * FROM expenses") # selects all data from tblFilms
-    allExpenses = dbCursor.fetchall() # retrieves all selected rows/records
-    for expense in allExpenses:
-        print(expense)
+            messagebox.showinfo("Success", f"The expense with the ID {expense_id} has been deleted.")
 
-def get_total_expenses():
-    dbCursor.execute("SELECT SUM(amount) FROM expenses")
-    total_expenses = dbCursor.fetchone()[0]
-    return total_expenses
+    def view_category_expenses(self):
+        category = simpledialog.askstring("Input", "Enter the category to view expenses:")
+        if category:
+            category_expenses = tracker.get_expenses_by_category(category)
+            if category_expenses:
+                category_window = tk.Toplevel(self.master)
+                category_window.title(f"Expenses in Category: {category}")
 
-def get_expenses_by_category(expenseCategory):
-    dbCursor.execute("SELECT * FROM expenses WHERE expenseCategory=?", (expenseCategory,))
-    category_expenses = dbCursor.fetchall()
-    return category_expenses
+                # Define Treeview
+                columns = ('ID', 'Name', 'Amount', 'Category')
+                expense_tree = ttk.Treeview(category_window, columns=columns, show='headings')
 
-def main():   
-    while True:
-        mainMenu = expense_menu()
+                # Define headings
+                for col in columns:
+                    expense_tree.heading(col, text=col)
 
-        if mainMenu == '1':
-            expenseName = input("Enter expense name: ")
-            amount = float(input("Enter expense amount: "))
-            expenseCategory = input("Enter expense category: ")
-            add_expense(expenseName, amount, expenseCategory)
-            print("Expense added successfully!")
-        elif mainMenu == '2':
-            total_expenses = get_total_expenses()
-            print(f"Total Expenses: ${total_expenses}")
-        elif mainMenu == '3':
-            expenseCategory = input("Enter category to view expenses: ")
-            category_expenses = get_expenses_by_category(expenseCategory)
-            total_category_expenses = sum(expense[2] for expense in category_expenses)
-            print(f"Total Expenses in {expenseCategory}: ${total_category_expenses}")
-            for expense in category_expenses:
-                print(f"{expense[1]}: ${expense[2]}")
-        elif mainMenu == '4':
-            showAllExpenses()
-        elif mainMenu == '5':
-            remove_expense()
-        elif mainMenu == '6':
-            print("Exiting...")
-            break
-        else:
-            print("Invalid choice. Please try again.")
+                # Add data to the treeview
+                for expense in category_expenses:
+                    expense_tree.insert('', tk.END, values=expense)
+
+                expense_tree.pack(expand=True, fill='both')
+            else:
+                messagebox.showinfo("Info", f"No expenses found in category: {category}")
+
+    def view_total_expenses(self):
+        total = tracker.get_total_expenses()
+        messagebox.showinfo("Total Expenses", f"Total Expenses: ${total}")
+
+def main():
+    root = tk.Tk()
+    app = ExpenseTrackerGUI(root)
+    root.mainloop()
 
 if __name__ == "__main__":
     main()
