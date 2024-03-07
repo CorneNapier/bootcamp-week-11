@@ -33,7 +33,7 @@ def remove_expense():
         if row == None:
             print(f'Delete not possible: No record with the ID {ID} exists.')
         else:
-            expenseDelete = dbCursor.execute("DELETE FROM expenses WHERE ID = ?", (ID,))
+            dbCursor.execute("DELETE FROM expenses WHERE ID = ?", (ID,))
             dbCon.commit()
             print(f'The expense with the ID {ID} has been deleted from the expenses table.')
 
