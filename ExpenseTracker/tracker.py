@@ -25,22 +25,25 @@ def add_expense(expenseName, amount, expenseCategory):
     dbCursor.execute("INSERT INTO expenses (expenseName, amount, expenseCategory) VALUES (?, ?, ?)", (expenseName, amount, expenseCategory))
     dbCon.commit()
     
-# def remove_expense():
-#         ID = input("Enter the ID of the expense to be deleted: ")
-#         dbCursor.execute(f"SELECT * FROM expenses WHERE ID = {ID}")
-#         row = dbCursor.fetchone()
+def remove_expense():
+        ID = input("Enter the ID of the expense to be deleted: ")
+        dbCursor.execute(f"SELECT * FROM expenses WHERE ID = {ID}")
+        row = dbCursor.fetchone()
             
-#         if row == None:
-#             print(f'Delete not possible: No record with the ID {ID} exists.')
-#         else:
-#             expenseDelete = dbCursor.execute("DELETE FROM expenses WHERE ID = ?", (ID,))
-#             dbCon.commit()
-#             print(f'The expense with the ID {ID} has been deleted from the expenses table.')
+        if row == None:
+            print(f'Delete not possible: No record with the ID {ID} exists.')
+        else:
+            expenseDelete = dbCursor.execute("DELETE FROM expenses WHERE ID = ?", (ID,))
+            dbCon.commit()
+            print(f'The expense with the ID {ID} has been deleted from the expenses table.')
 
             
 def showAllExpenses():
     dbCursor.execute("SELECT * FROM expenses") 
-    allExpenses = dbCursor.fetchall() # retrieves all selected rows/records
+    allExpenses = dbCursor.fetchall()
+    # for expense in allExpenses:
+    #     print(expense)
+    #remove the return and uncomment the for to run in terminal
     return allExpenses
 
 def get_total_expenses():
@@ -84,9 +87,9 @@ def main():
             print("Invalid choice. Please try again.")
 
 if __name__ == "__main__":
+    #remove all function calls except for main() to run in terminal
     add_expense()
-    # remove_expense()
     showAllExpenses()
-    get_total_expenses()
     get_expenses_by_category()
+    get_total_expenses()
     main()
